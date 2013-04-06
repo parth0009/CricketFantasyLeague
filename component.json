@@ -1,0 +1,10 @@
+{
+  "name": "Harleston Cricket Club Fantasy League",
+  "version": "0.0.1",
+  "directory": "public/assets/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}
