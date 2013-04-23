@@ -18,34 +18,36 @@ $app['debug'] = $debug;
 
 // Start Twig
 Twig_Autoloader::register();
-$loader = new Twig_Loader_Filesystem('../app/Resources/views/');
+$loader = new Twig_Loader_Filesystem('../views/');
 $twig = new Twig_Environment($loader, array(
 	'cache' => __DIR__ . '/../cache/compilation_cache',
 	'debug' => $debug,
 ));
 
-// Variables
-$loggedIn = true;
+// Register Service Providers
+$app->register(new Silex\Provider\SessionServiceProvider());
 
-$app->get('', function() use ($app, $loggedIn) {
+$app->get('', function() use ($app, $twig) {
+	$loggedIn = $app['session']->get('loggedIn');
 	if (! $loggedIn) {
 		return $app->redirect('login');
 	}
-	return 'Dashboard';
+	$template = $twig->loadTemplate('league.html');
+	return $template->render(array('errors' => null));
+});
+
+$app->post('login', function(Request $request) use ($app) {
+	$loggedIn = false;
+	if (1 == 1) {
+		$loggedIn = true;
+	}
+	$app['session']->set('loggedIn', $loggedIn);
+	return $app->redirect('/cricket/web/');
 });
 
 $app->get('login', function() use ($twig) {
 	$template = $twig->loadTemplate('login.html');
 	return $template->render(array('errors' => null));
-});
-
-$app->post('login', function(Request $request) {
-	return 'POST login';
-	
-	$something = 'Hallo';
-	$something = $app->escape($something);
-	
-	return $app->redirect('/');
 });
 
 $app->get('/summary', function(Request $request) {
