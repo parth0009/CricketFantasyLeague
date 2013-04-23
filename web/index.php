@@ -1,21 +1,30 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Import declarations
 use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response as Response;
 
+$baseUrl = '/localhost/cricket/web/';
+$debug = true;
+
 // Start Silex
 $app = new Silex\Application();
+$app['debug'] = $debug;
 
-// Configuration
-$app['debug'] = true;
+// Start Twig
+Twig_Autoloader::register();
+$loader = new Twig_Loader_Filesystem('../app/Resources/views/');
+$twig = new Twig_Environment($loader, array(
+	'cache' => __DIR__ . '/../cache/compilation_cache',
+	'debug' => $debug,
+));
 
-$baseUrl = '/localhost/cricket/web/';
-// Service providers
-
-
+// Variables
 $loggedIn = true;
 
 $app->get('', function() use ($app, $loggedIn) {
@@ -25,8 +34,9 @@ $app->get('', function() use ($app, $loggedIn) {
 	return 'Dashboard';
 });
 
-$app->get('login', function() {
-	return 'Login';
+$app->get('login', function() use ($twig) {
+	$template = $twig->loadTemplate('login.html');
+	return $template->render(array('errors' => null));
 });
 
 $app->post('login', function(Request $request) {
@@ -47,7 +57,7 @@ $app->error(function (\Exception $exception, $code) {
 		
 		
 		default:
-			return 'Whoops';
+			return print_r($exception, true);
 			break;
 	}
 });
