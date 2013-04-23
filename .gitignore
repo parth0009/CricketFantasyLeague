@@ -19,3 +19,6 @@ app/config/parameters.yml
 .buildpath
 .project
 .settings/*
+
+Composer files
+composer.lock
