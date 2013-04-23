@@ -8,8 +8,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // Import declarations
 use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response as Response;
+use Silex\Provider\SessionServiceProvider as SessionServiceProvider;
+use Silex\Provider\DoctrineServiceProvider as DoctrineServiceProvider;
 
-$baseUrl = '/localhost/cricket/web/';
+$baseUrl = '//localhost/cricket/web/';
 $debug = true;
 
 // Start Silex
@@ -23,9 +25,16 @@ $twig = new Twig_Environment($loader, array(
 	'cache' => __DIR__ . '/../cache/compilation_cache',
 	'debug' => $debug,
 ));
+$twigParameters = array('baseUrl' => $baseUrl);
 
 // Register Service Providers
-$app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new SessionServiceProvider());
+$app->register(new DoctrineServiceProvider(), array(
+		'db.options' => array(
+				'driver' =>'pdo_sqlite',
+				'path'     => __DIR__. '/../cricket.sqlite',
+		),
+));
 
 $app->get('', function() use ($app, $twig) {
 	$loggedIn = $app['session']->get('loggedIn');
@@ -33,21 +42,31 @@ $app->get('', function() use ($app, $twig) {
 		return $app->redirect('login');
 	}
 	$template = $twig->loadTemplate('league.html');
-	return $template->render(array('errors' => null));
+	return $template->render();
 });
 
 $app->post('login', function(Request $request) use ($app) {
 	$loggedIn = false;
-	if (1 == 1) {
+	
+	$login = $request->get('login');
+	$password = $request->get('password');
+	
+	$sql = "SELECT * FROM users WHERE login = ? AND password = ?";
+	$user = $app['db']->fetchAssoc($sql, array((string) $login));
+	$userId = $user['id'];
+	
+	$loggedIn = $app['session']->set('userId', $userId);
+	
+	if ($user) {
 		$loggedIn = true;
 	}
 	$app['session']->set('loggedIn', $loggedIn);
 	return $app->redirect('/cricket/web/');
 });
 
-$app->get('login', function() use ($twig) {
+$app->get('login', function() use ($twig, $twigParameters) {
 	$template = $twig->loadTemplate('login.html');
-	return $template->render(array('errors' => null));
+	return $template->render($twigParameters);
 });
 
 $app->get('/summary', function(Request $request) {
