@@ -36,27 +36,26 @@ $app->register(new DoctrineServiceProvider(), array(
 		),
 ));
 
-$app->get('', function() use ($app, $twig) {
+$app->get('', function() use ($app, $twig, $twigParameters) {
 	$loggedIn = $app['session']->get('loggedIn');
+	$user = $app['session']->get('user');
 	if (! $loggedIn) {
 		return $app->redirect('login');
 	}
 	$template = $twig->loadTemplate('league.html');
-	return $template->render();
+	return $template->render($twigParameters);
 });
 
 $app->post('login', function(Request $request) use ($app) {
 	$loggedIn = false;
-	
 	$login = $request->get('login');
 	$password = $request->get('password');
 	
-	$sql = "SELECT * FROM users WHERE login = ? AND password = ?";
+	$sql = "SELECT * FROM users WHERE login = ?"/* . " AND password = ?"*/;
 	$user = $app['db']->fetchAssoc($sql, array((string) $login));
 	$userId = $user['id'];
-	
-	$loggedIn = $app['session']->set('userId', $userId);
-	
+	$app['session']->set('user', $user);
+	//var_dump($user);exit();
 	if ($user) {
 		$loggedIn = true;
 	}
@@ -67,6 +66,12 @@ $app->post('login', function(Request $request) use ($app) {
 $app->get('login', function() use ($twig, $twigParameters) {
 	$template = $twig->loadTemplate('login.html');
 	return $template->render($twigParameters);
+});
+
+$app->get('logout', function() use ($app) {
+	$app['session']->set('user', null);
+	$app['session']->set('loggedIn', null);
+	return $app->redirect('/cricket/web/');
 });
 
 $app->get('/summary', function(Request $request) {
