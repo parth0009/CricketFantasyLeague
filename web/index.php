@@ -3,7 +3,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-require_once __DIR__ . '/../vendor/autoload.php';
+/*$loader = */require_once __DIR__ . '/../vendor/autoload.php';
+/*$loader->add('Model', __DIR__ . '/../src/Model');*/
 
 // Import declarations
 use Symfony\Component\HttpFoundation\Request as Request;
@@ -14,9 +15,19 @@ use Silex\Provider\DoctrineServiceProvider as DoctrineServiceProvider;
 $baseUrl = '//localhost/cricket/web/';
 $debug = true;
 
+
+
 // Start Silex
 $app = new Silex\Application();
 $app['debug'] = $debug;
+//$app['autoloader']->registerNamespace('Model', __DIR__ . '/../src/Model');
+
+$user = new Model\User();
+
+/*spl_autoload_register(function($name) {
+	exit('name');
+	require_once __DIR__ . '/../src/Model/' . $name .'.php';
+});*/
 
 // Start Twig
 Twig_Autoloader::register();
