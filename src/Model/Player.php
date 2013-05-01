@@ -3,39 +3,53 @@
 namespace Model;
 
 /**
- * User
+ * Player
  *
  * @ORM\Entity
- * @ORM\Table(name="users")
+ * @ORM\Table(name="players")
  */
-class User extends Entity
+final class Player extends User
 {	
 	/**
-	 * Name of User
-	 * @ORM\Column(type="string")
+	 * 
+	 * @var string
 	 */
-	protected $name;
+	const TYPE_BOWLER = 'bowler';
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Avatar")
-	 * @var Model\Avatar
+	 * 
+	 * @var string
 	 */
-	protected $avatar;
+	const TYPE_BATTER = 'batter';
 	
 	/**
-	 * Login (username)
+	 * 
+	 * @var string
+	 */
+	const TYPE_ALLSTAR = 'allstar';
+	
+	/**
+	 * Types that the Player could be
+	 * @var string[]
+	 */
+	private static $types = array(
+		self::TYPE_BOWLER,
+		self::TYPE_BATTER,
+		self::TYPE_ALLSTAR,
+	);
+	
+	/**
+	 * Team selection (1st team, 2nd team, 3rd team, etc.)
+	 * @ORM\Column(type="integer")
+	 * @var integer
+	 */
+	private $selection;
+	
+	/**
+	 * Type of Player (bowler, batter or allstar)
 	 * @ORM\Column(type="string")
 	 */
-	protected $login;
-	
-	public function __toString()
-	{
-		try {
-			return $this->getName();
-		} catch (Exception $exception) {
-			return '?';
-		}
-	}
+	private $type;
 
 	/**
 	 * @return the $name
