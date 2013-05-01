@@ -3,8 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-/*$loader = */require_once __DIR__ . '/../vendor/autoload.php';
-/*$loader->add('Model', __DIR__ . '/../src/Model');*/
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // Import declarations
 use Symfony\Component\HttpFoundation\Request as Request;
@@ -15,19 +14,9 @@ use Silex\Provider\DoctrineServiceProvider as DoctrineServiceProvider;
 $baseUrl = '//localhost/cricket/web/';
 $debug = true;
 
-
-
 // Start Silex
 $app = new Silex\Application();
 $app['debug'] = $debug;
-//$app['autoloader']->registerNamespace('Model', __DIR__ . '/../src/Model');
-
-$user = new Model\User();
-
-/*spl_autoload_register(function($name) {
-	exit('name');
-	require_once __DIR__ . '/../src/Model/' . $name .'.php';
-});*/
 
 // Start Twig
 Twig_Autoloader::register();
@@ -40,6 +29,7 @@ $twigParameters = array('baseUrl' => $baseUrl);
 
 // Register Service Providers
 $app->register(new SessionServiceProvider());
+$app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new DoctrineServiceProvider(), array(
 		'db.options' => array(
 				'driver' =>'pdo_sqlite',
@@ -47,42 +37,69 @@ $app->register(new DoctrineServiceProvider(), array(
 		),
 ));
 
-$app->get('', function() use ($app, $twig, $twigParameters) {
-	$loggedIn = $app['session']->get('loggedIn');
-	$user = $app['session']->get('user');
-	if (! $loggedIn) {
+define('ROLE_MEMBER', 'member');
+define('ROLE_ADMIN', 'admin');
+
+$users = array(
+	// raw password is foo
+	'admin' => array(ROLE_ADMIN,
+		'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+	'member' => array(ROLE_MEMBER,
+			'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+);
+
+$app['security.firewalls'] = array(
+	'admin' => array(
+		'pattern' => '^/admin/',
+        'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
+		'logout' => array('logout_path' => '/admin/logout'),
+		'http' => true,
+		'users' => $users,
+	),
+	'team' => array(
+			'pattern' => '^/team/',
+			'form' => array('login_path' => '/login', 'check_path' => '/team/login_check'),
+			'logout' => array('logout_path' => '/team/logout'),
+			'http' => true,
+			'users' => $users,
+	),
+);
+
+$app->get('', function() use ($app, $twig) {
+	￼if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
 		return $app->redirect('login');
 	}
+	/*$loggedIn = $app['session']->get('loggedIn');
+	if (! $loggedIn) {
+		return $app->redirect('login');
+	}*/
 	$template = $twig->loadTemplate('league.html');
-	return $template->render($twigParameters);
+	return $template->render();
 });
 
 $app->post('login', function(Request $request) use ($app) {
 	$loggedIn = false;
+	
 	$login = $request->get('login');
 	$password = $request->get('password');
+	$password = '';
 	
-	$sql = "SELECT * FROM users WHERE login = ?"/* . " AND password = ?"*/;
+	/*$sql = "SELECT * FROM users WHERE login = ? AND password = ?";
 	$user = $app['db']->fetchAssoc($sql, array((string) $login));
 	$userId = $user['id'];
-	$app['session']->set('user', $user);
-	//var_dump($user);exit();
+	
+	$loggedIn = $app['session']->set('userId', $userId);
+	
 	if ($user) {
 		$loggedIn = true;
 	}
-	$app['session']->set('loggedIn', $loggedIn);
+	$app['session']->set('loggedIn', $loggedIn);*/
 	return $app->redirect('/cricket/web/');
 });
 
 $app->get('login', function() use ($twig, $twigParameters) {
 	$template = $twig->loadTemplate('login.html');
 	return $template->render($twigParameters);
-});
-
-$app->get('logout', function() use ($app) {
-	$app['session']->set('user', null);
-	$app['session']->set('loggedIn', null);
-	return $app->redirect('/cricket/web/');
 });
 
 $app->get('/summary', function(Request $request) {
@@ -101,3 +118,4 @@ $app->error(function (\Exception $exception, $code) {
 
 // Run Silex
 $app->run();
+
