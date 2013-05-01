@@ -3,12 +3,12 @@
 namespace Model;
 
 /**
- * User
+ * Team
  *
  * @ORM\Entity
- * @ORM\Table(name="users")
+ * @ORM\Table(name="teams")
  */
-class User extends Entity
+class Team extends Entity
 {	
 	/**
 	 * Name of User
@@ -17,10 +17,11 @@ class User extends Entity
 	protected $name;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Avatar")
-	 * @var Model\Avatar
+	 * User that the Team belongs to
+	 * @ORM\ManyToOne(targetEntity="User")
+	 * @var Model\User
 	 */
-	protected $avatar;
+	protected $user;
 	
 	/**
 	 * Login (username)
