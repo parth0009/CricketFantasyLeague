@@ -1,11 +1,17 @@
 <?php
 
-namespace Model;
+namespace Model\Entity;
 
+/**
+ * Avatar
+ *
+ * @Entity
+ * @Table(name="avatars")
+ */
 class Avatar extends Entity
 {
 	/**
-	 * @ORM\Column(type="string")
+	 * @Column(type="string")
 	 */
 	private $path;
 	

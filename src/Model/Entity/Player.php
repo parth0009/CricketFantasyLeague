@@ -1,12 +1,12 @@
 <?php
 
-namespace Model;
+namespace Model\Entity;
 
 /**
  * Player
  *
- * @ORM\Entity
- * @ORM\Table(name="players")
+ * @Entity
+ * @Table(name="players")
  */
 final class Player extends User
 {	

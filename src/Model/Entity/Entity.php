@@ -1,16 +1,19 @@
 <?php
 
-namespace Model;
+namespace Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @Entity
+ */
 class Entity
 {	
 	
 	/**
-	 * @ORM\Id
-	 * @ORM\Column(type="integer");
-	 * @ORM\GeneratedValue(strategy="AUTO")
+	 * @Id
+	 * @Column(type="integer");
+	 * @GeneratedValue(strategy="AUTO")
 	 */
 	protected $id;
 	

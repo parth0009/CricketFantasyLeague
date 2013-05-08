@@ -1,17 +1,17 @@
 <?php
 
-namespace Model;
+namespace Model\Entity;
 
 /**
  * Team
  *
- * @ORM\Entity
- * @ORM\Table(name="teams")
+ * @Entity
+ * @Table(name="teams")
  */
 class Team extends Entity
 {	
 	/**
-	 * Name of User
+	 * Name of Team
 	 * @ORM\Column(type="string")
 	 */
 	protected $name;
@@ -24,10 +24,39 @@ class Team extends Entity
 	protected $user;
 	
 	/**
-	 * Login (username)
-	 * @ORM\Column(type="string")
+	 * First batsman
+	 * @ORM\ManyToOne(targetEntity="Player")
+	 * @var Model\Player
 	 */
-	protected $login;
+	protected $batter1;
+	
+	/**
+	 * Second batsman
+	 * @ORM\ManyToOne(targetEntity="Player")
+	 * @var Model\Player
+	 */
+	protected $batter2;
+	
+	/**
+	 * First bowler
+	 * @ORM\ManyToOne(targetEntity="Player")
+	 * @var Model\Player
+	 */
+	protected $bowler1;
+	
+	/**
+	 * Second bowler
+	 * @ORM\ManyToOne(targetEntity="Player")
+	 * @var Model\Player
+	 */
+	protected $bowler2;
+	
+	/**
+	 * All-rounder
+	 * @ORM\ManyToOne(targetEntity="Player")
+	 * @var Model\Player
+	 */
+	protected $allround;
 	
 	public function __toString()
 	{

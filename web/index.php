@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response as Response;
 use Silex\Provider\SessionServiceProvider as SessionServiceProvider;
 use Silex\Provider\DoctrineServiceProvider as DoctrineServiceProvider;
+use \Doctrine\Common\Cache\ApcCache;
+use \Doctrine\Common\Cache\ArrayCache;
 
 $baseUrl = '//localhost/cricket/web/';
 $debug = true;
@@ -29,12 +31,31 @@ $twigParameters = array('baseUrl' => $baseUrl);
 
 // Register Service Providers
 $app->register(new SessionServiceProvider());
-$app->register(new Silex\Provider\SecurityServiceProvider());
+//$app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new DoctrineServiceProvider(), array(
 		'db.options' => array(
 				'driver' =>'pdo_sqlite',
-				'path'     => __DIR__. '/../cricket.sqlite',
+				'path'     => __DIR__. '/../data/cricket.sqlite',
 		),
+));
+
+// Register Doctrine DBAL
+/*$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+		// Doctrine DBAL settings goes here
+));*/
+
+// Register Doctrine ORM
+$app->register(new Nutwerk\Provider\DoctrineORMServiceProvider(), array(
+		'db.orm.proxies_dir'           => __DIR__ . '/cache/doctrine/proxy',
+		'db.orm.proxies_namespace'     => 'DoctrineProxy',
+		'db.orm.cache'                 =>
+		!$app['debug'] && extension_loaded('apc') ? new ApcCache() : new ArrayCache(),
+		'db.orm.auto_generate_proxies' => true,
+		'db.orm.entities'              => array(array(
+				'type'      => 'annotation',       // entity definition
+				'path'      => __DIR__ . '/src',   // path to your entity classes
+				'namespace' => 'Model\Entity', // your classes namespace
+		)),
 ));
 
 define('ROLE_MEMBER', 'member');
@@ -48,7 +69,7 @@ $users = array(
 			'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
 );
 
-$app['security.firewalls'] = array(
+/*$app['security.firewalls'] = array(
 	'admin' => array(
 		'pattern' => '^/admin/',
         'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
@@ -63,18 +84,18 @@ $app['security.firewalls'] = array(
 			'http' => true,
 			'users' => $users,
 	),
-);
+);*/
 
 $app->get('', function() use ($app, $twig) {
-	￼if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
+	//if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
 		return $app->redirect('login');
-	}
+	//}
 	/*$loggedIn = $app['session']->get('loggedIn');
 	if (! $loggedIn) {
 		return $app->redirect('login');
 	}*/
 	$template = $twig->loadTemplate('league.html');
-	return $template->render();
+	return $template->render(array());
 });
 
 $app->post('login', function(Request $request) use ($app) {
@@ -97,7 +118,16 @@ $app->post('login', function(Request $request) use ($app) {
 	return $app->redirect('/cricket/web/');
 });
 
-$app->get('login', function() use ($twig, $twigParameters) {
+$app->get('login', function() use ($app, $twig, $twigParameters) {
+	
+	$user = new Model\Entity\User();
+	$user->setName('Hello world!');
+	$user->setLogin('something');
+	$user->setPassword('something-else');
+	
+	$app['db.orm.em']->persist($user);
+	$app['db.orm.em']->flush();
+	
 	$template = $twig->loadTemplate('login.html');
 	return $template->render($twigParameters);
 });

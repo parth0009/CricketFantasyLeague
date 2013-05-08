@@ -1,32 +1,38 @@
 <?php
 
-namespace Model;
+namespace Model\Entity;
 
 /**
  * User
  *
- * @ORM\Entity
- * @ORM\Table(name="users")
+ * @Entity
+ * @Table(name="users")
  */
 class User extends Entity
 {	
 	/**
 	 * Name of User
-	 * @ORM\Column(type="string")
+	 * @Column(type="string")
 	 */
 	protected $name;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Avatar")
+	 * @ManyToOne(targetEntity="Avatar")
 	 * @var Model\Avatar
 	 */
 	protected $avatar;
 	
 	/**
 	 * Login (username)
-	 * @ORM\Column(type="string")
+	 * @Column(type="string")
 	 */
 	protected $login;
+	
+	/**
+	 * Password
+	 * @Column(type="string")
+	 */
+	protected $password;
 	
 	public function __toString()
 	{
@@ -49,6 +55,20 @@ class User extends Entity
 	 */
 	public function setName($name) {
 		$this->name = $name;
+	}
+	
+	/**
+	 * @return the $name
+	 */
+	public function getPassword() {
+		return null;
+	}
+	
+	/**
+	 * @param string $name
+	 */
+	public function setPassword($password) {
+		$this->password = $password;
 	}
 
 	/**
