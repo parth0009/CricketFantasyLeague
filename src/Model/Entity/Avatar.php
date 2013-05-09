@@ -11,6 +11,12 @@ namespace Model\Entity;
 class Avatar extends Entity
 {
 	/**
+	 * Name of Avatar
+	 * @Column(type="string")
+	 */
+	protected $name;
+	
+	/**
 	 * @Column(type="string")
 	 */
 	private $path;
@@ -24,6 +30,20 @@ class Avatar extends Entity
 		}
 	}
 
+	/**
+	 * @return the $name
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	
+	/**
+	 * @param string $name
+	 */
+	public function setName($name) {
+		$this->name = $name;
+	}
+	
 	/**
 	 * @return the $name
 	 */

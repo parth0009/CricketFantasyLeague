@@ -5,7 +5,7 @@ namespace Model\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
+ * @MappedSuperclass
  */
 class Entity
 {	

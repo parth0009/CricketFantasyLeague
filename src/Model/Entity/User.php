@@ -4,9 +4,11 @@ namespace Model\Entity;
 
 /**
  * User
- *
+ * 
  * @Entity
- * @Table(name="users")
+ * @InheritanceType("SINGLE_TABLE")
+ * @DiscriminatorColumn(name="type", type="string")
+ * @DiscriminatorMap({"user" = "User", "player" = "Player", "admin" = "Admin" })
  */
 class User extends Entity
 {	

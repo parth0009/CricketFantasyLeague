@@ -6,9 +6,8 @@ namespace Model\Entity;
  * Player
  *
  * @Entity
- * @Table(name="players")
  */
-final class Player extends User
+class Player extends User
 {	
 	/**
 	 * 
@@ -32,7 +31,7 @@ final class Player extends User
 	 * Types that the Player could be
 	 * @var string[]
 	 */
-	private static $types = array(
+	private static $skills = array(
 		self::TYPE_BOWLER,
 		self::TYPE_BATTER,
 		self::TYPE_ALLSTAR,
@@ -40,16 +39,16 @@ final class Player extends User
 	
 	/**
 	 * Team selection (1st team, 2nd team, 3rd team, etc.)
-	 * @ORM\Column(type="integer")
+	 * @Column(type="integer")
 	 * @var integer
 	 */
 	private $selection;
 	
 	/**
-	 * Type of Player (bowler, batter or allstar)
-	 * @ORM\Column(type="string")
+	 * Skill of Player (bowler, batter or allstar)
+	 * @Column(type="string")
 	 */
-	private $type;
+	private $skill;
 
 	/**
 	 * @return the $name
@@ -68,29 +67,31 @@ final class Player extends User
 	/**
 	 * @return the $avatar
 	 */
-	public function getAvatar() {
-		return $this->avatar;
+	public function getSkill() {
+		return $this->skill;
 	}
 
 	/**
 	 * @param Avatar $avatar
 	 */
-	public function setAvatar(Avatar $avatar) {
-		$this->avatar = $avatar;
+	public function setSkill($skill) {
+		if (in_array((string) $skill, static::$skills)) {
+			$this->skill = $skill;
+		}
 	}
 
 	/**
 	 * @return the $login
 	 */
-	public function getLogin() {
-		return $this->login;
+	public function getSelection() {
+		return (integer) $this->selection;
 	}
 
 	/**
 	 * @param field_type $login
 	 */
-	public function setLogin($login) {
-		$this->login = $login;
+	public function setSelection($selection) {
+		$this->selection = (integer) $selection;
 	}
 
 	
