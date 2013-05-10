@@ -58,6 +58,15 @@ class Team extends Entity
 	 */
 	protected $allround;
 	
+	/**
+	 * @ManyToMany(targetEntity="Entry")
+	 * @JoinTable(name="user_groups",
+	 *      joinColumns={@JoinColumn(name="team_id", referencedColumnName="id")},
+	 *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="id")} 
+ 	 * )
+	 */
+	//protected $entries;
+	
 	public function __toString()
 	{
 		try {

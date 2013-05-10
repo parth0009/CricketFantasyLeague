@@ -67,7 +67,7 @@ $users = array(
 	'admin' => array(ROLE_ADMIN,
 		'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
 	'member' => array(ROLE_MEMBER,
-			'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+		'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
 );
 
 $app['security.firewalls'] = array(
@@ -88,10 +88,11 @@ $app['security.firewalls'] = array(
 );
 
 $app->get('', function() use ($app, $twig) {
-	if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
+	/*if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
 		return $app->redirect('login');
-	}
+	}*/
 	$loggedIn = $app['session']->get('loggedIn');
+	//var_dump($loggedIn);exit();
 	if (! $loggedIn) {
 		return $app->redirect('login');
 	}
@@ -101,7 +102,6 @@ $app->get('', function() use ($app, $twig) {
 
 $app->post('login', function(Request $request) use ($app) {
 	$loggedIn = false;
-	
 	$login = $request->get('login');
 	$password = $request->get('password');
 	$password = '';
@@ -122,13 +122,20 @@ $app->post('login', function(Request $request) use ($app) {
 $app->get('login', function() use ($app, $twig, $twigParameters, $entityManager) {
 	
 	$user = new Model\Entity\User();
-	$user->setName('Hello world!');
+	$user->setName('Test User');
 	$user->setLogin('something');
 	$user->setPassword('something-else');
-	
-	$entityManager->persist($user);
-	$entityManager->flush();
-	
+	$player = new Model\Entity\Player();
+	$player->setName('Test Player');
+	$player->setLogin('something');
+	$player->setPassword('something-else');
+	try {
+		$entityManager->persist($user);
+		$entityManager->persist($player);
+		$entityManager->flush();
+	} catch (Exception $e) {
+		var_dump($e);
+	}
 	$template = $twig->loadTemplate('login.html');
 	return $template->render($twigParameters);
 });
