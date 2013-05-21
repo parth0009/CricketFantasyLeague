@@ -18,8 +18,9 @@ class Team extends Entity
 	
 	/**
 	 * User that the Team belongs to
-	 * @ORM\ManyToOne(targetEntity="User")
-	 * @var Model\User
+	 * @ORM\OneToOne(targetEntity="User")
+	 * @JoinColumn(name="user_id", referencedColumnName="id")
+	 * @var Model\Entity\User
 	 */
 	protected $user;
 	

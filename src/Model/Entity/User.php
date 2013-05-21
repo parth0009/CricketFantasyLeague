@@ -64,6 +64,12 @@ class User extends Entity implements UserInterface
 	 */
 	protected $role = 'user';
 	
+	/**
+	 * 
+	 * @ORM\OneToOne(targetEntity="User", mappedBy="")
+	 */
+	protected $team;
+	
 	public function __toString()
 	{
 		try {
@@ -106,6 +112,20 @@ class User extends Entity implements UserInterface
 	 */
 	public function getAvatar() {
 		return $this->avatar;
+	}
+	
+	/**
+	 * @return $team|null
+	 */
+	public function getTeam() {
+		return $this->team;
+	}
+	
+	/**
+	 * @param Model\Entity\Team $team
+	 */
+	public function setTeam(Model\Entity\Team $team) {
+		$this->team = $team;
 	}
 
 	/**

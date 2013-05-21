@@ -98,8 +98,14 @@ $app['security.firewalls'] = array(
  */
 
 // Homepage
-$app->get('', function() use ($app, $twig) {
-	exit('loaded');
+$app->get('', function() use ($app, $twig, $entityManager) {
+	
+	$user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
+	$avatar = $user->getAvatar();
+	
+	$team = $user->getTeam();
+	var_dump($team);exit();
+	
 	$token = $app['security']->getToken();
 	var_dump($token);
 	exit();
@@ -218,7 +224,8 @@ $app->error(function (\Exception $exception, $code) {
 		
 		
 		default:
-			var_dump($exception);
+			var_dump($exception->getMessage());
+			exit();
 			return print_r($exception, true);
 			break;
 	}
