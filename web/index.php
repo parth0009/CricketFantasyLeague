@@ -111,9 +111,9 @@ $app->get('', function() use ($app, $twig, $entityManager) {
 
     if ($user instanceof Model\Entity\User) {
         $team = $user->getTeam();
-        //var_dump($team);exit();
     }
 
+    $teams = $entityManager->getRepository('Model\Entity\Team')->findAll();
 	
 	$token = $app['security']->getToken();
 	//var_dump($token);
@@ -133,7 +133,7 @@ $app->get('', function() use ($app, $twig, $entityManager) {
 		return $app->redirect('login');
 	}*/
 	$template = $twig->loadTemplate('league.html');
-	return $template->render(array('team' => $team));
+	return $template->render(array('teams' => $teams));
 });
 
 $app->post('login', function(Request $request) use ($app, $entityManager) {
