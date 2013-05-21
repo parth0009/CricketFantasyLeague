@@ -12,13 +12,13 @@ class Team extends Entity
 {	
 	/**
 	 * Name of Team
-	 * @ORM\Column(type="string")
+	 * @Column(type="string")
 	 */
 	protected $name;
 	
 	/**
 	 * User that the Team belongs to
-	 * @ORM\OneToOne(targetEntity="User")
+     * @OneToOne(targetEntity="Model\Entity\User")
 	 * @JoinColumn(name="user_id", referencedColumnName="id")
 	 * @var Model\Entity\User
 	 */
@@ -26,38 +26,38 @@ class Team extends Entity
 	
 	/**
 	 * First batsman
-	 * @ORM\ManyToOne(targetEntity="Player")
-	 * @var Model\Player
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
 	 */
-	protected $batter1;
+	//protected $batter1;
 	
 	/**
 	 * Second batsman
-	 * @ORM\ManyToOne(targetEntity="Player")
-	 * @var Model\Player
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
 	 */
-	protected $batter2;
+	//protected $batter2;
 	
 	/**
 	 * First bowler
-	 * @ORM\ManyToOne(targetEntity="Player")
-	 * @var Model\Player
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
 	 */
-	protected $bowler1;
+	//protected $bowler1;
 	
 	/**
 	 * Second bowler
-	 * @ORM\ManyToOne(targetEntity="Player")
-	 * @var Model\Player
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
 	 */
-	protected $bowler2;
+	//protected $bowler2;
 	
 	/**
 	 * All-rounder
-	 * @ORM\ManyToOne(targetEntity="Player")
-	 * @var Model\Player
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
 	 */
-	protected $allround;
+	//protected $allround;
 	
 	/**
 	 * @ManyToMany(targetEntity="Entry")

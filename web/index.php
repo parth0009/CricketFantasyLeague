@@ -99,24 +99,33 @@ $app['security.firewalls'] = array(
 
 // Homepage
 $app->get('', function() use ($app, $twig, $entityManager) {
-	
-	$user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
-	$avatar = $user->getAvatar();
-	
-	$team = $user->getTeam();
-	var_dump($team);exit();
+
+	try {
+        $user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
+    } catch (Exception $e) {
+        var_dump($e->getTraceAsString());
+        var_dump($e->getMessage());exit();
+    }
+        //var_dump($team);exit();
+
+
+    if ($user instanceof Model\Entity\User) {
+        $team = $user->getTeam();
+        //var_dump($team);exit();
+    }
+
 	
 	$token = $app['security']->getToken();
-	var_dump($token);
-	exit();
+	//var_dump($token);
+	//exit();
 	//exit('hat');
 	//$userProvider = $app['security.user_provider.default'];
 	//var_dump($userProvider);
 	//var_dump($token);exit();
 	
-	if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
+	/*if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
 		return $app->redirect('login');
-	}
+	}*/
 	
 	/*$loggedIn = $app['session']->get('loggedIn');
 	//var_dump($loggedIn);exit();
@@ -124,7 +133,7 @@ $app->get('', function() use ($app, $twig, $entityManager) {
 		return $app->redirect('login');
 	}*/
 	$template = $twig->loadTemplate('league.html');
-	return $template->render(array());
+	return $template->render(array('team' => $team));
 });
 
 $app->post('login', function(Request $request) use ($app, $entityManager) {

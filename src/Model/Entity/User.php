@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @Table(name="users")
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="type", type="string")
- * @DiscriminatorMap({"user" = "User", "player" = "Player", "admin" = "Admin" })
+ * @DiscriminatorMap({"user" = "Model\Entity\User", "player" = "Model\Entity\Player", "admin" = "Model\Entity\Admin" })
  */
 class User extends Entity implements UserInterface
 {	
@@ -23,8 +23,8 @@ class User extends Entity implements UserInterface
 	protected $name;
 	
 	/**
-	 * @ManyToOne(targetEntity="Avatar")
-	 * @var Model\Avatar
+	 * @ManyToOne(targetEntity="Model\Entity\Avatar")
+	 * @var Model\Entity\Avatar
 	 */
 	protected $avatar;
 	
@@ -66,7 +66,7 @@ class User extends Entity implements UserInterface
 	
 	/**
 	 * 
-	 * @ORM\OneToOne(targetEntity="User", mappedBy="")
+	 * @OneToOne(targetEntity="Model\Entity\Team", mappedBy="user")
 	 */
 	protected $team;
 	
