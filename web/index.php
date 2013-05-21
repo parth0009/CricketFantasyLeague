@@ -12,8 +12,9 @@ use Silex\Provider\SessionServiceProvider as SessionServiceProvider;
 use Silex\Provider\DoctrineServiceProvider as DoctrineServiceProvider;
 use \Doctrine\Common\Cache\ApcCache;
 use \Doctrine\Common\Cache\ArrayCache;
+use \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-$baseUrl = '//localhost/cricket/web/';
+$baseUrl = '/localhost/cricket/web/';
 $debug = true;
 
 // Start Silex
@@ -46,7 +47,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
 
 // Register Doctrine ORM
 $app->register(new Nutwerk\Provider\DoctrineORMServiceProvider(), array(
-		'db.orm.proxies_dir'           => __DIR__ . '/cache/doctrine/proxy',
+		'db.orm.proxies_dir'           => __DIR__ . '/../cache/doctrine/proxy',
 		'db.orm.proxies_namespace'     => 'DoctrineProxy',
 		'db.orm.cache'                 =>
 		!$app['debug'] && extension_loaded('apc') ? new ApcCache() : new ArrayCache(),
@@ -59,6 +60,7 @@ $app->register(new Nutwerk\Provider\DoctrineORMServiceProvider(), array(
 ));
 $entityManager = $app['db.orm.em'];
 
+// Define user roles
 define('ROLE_MEMBER', 'member');
 define('ROLE_ADMIN', 'admin');
 
@@ -70,7 +72,11 @@ $users = array(
 		'5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
 );
 
+// Define user restrictions
 $app['security.firewalls'] = array(
+	'unsecured' => array(
+		'anonymous' => true,
+	),
 	'admin' => array(
 		'pattern' => '^/admin/',
         'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
@@ -87,25 +93,84 @@ $app['security.firewalls'] = array(
 	),
 );
 
+/*
+ * Define routes
+ */
+
+// Homepage
 $app->get('', function() use ($app, $twig) {
-	/*if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
+	exit('loaded');
+	$token = $app['security']->getToken();
+	var_dump($token);
+	exit();
+	//exit('hat');
+	//$userProvider = $app['security.user_provider.default'];
+	//var_dump($userProvider);
+	//var_dump($token);exit();
+	
+	if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
 		return $app->redirect('login');
-	}*/
-	$loggedIn = $app['session']->get('loggedIn');
+	}
+	
+	/*$loggedIn = $app['session']->get('loggedIn');
 	//var_dump($loggedIn);exit();
 	if (! $loggedIn) {
 		return $app->redirect('login');
-	}
+	}*/
 	$template = $twig->loadTemplate('league.html');
 	return $template->render(array());
 });
 
-$app->post('login', function(Request $request) use ($app) {
-	$loggedIn = false;
-	$login = $request->get('login');
-	$password = $request->get('password');
-	$password = '';
+$app->post('login', function(Request $request) use ($app, $entityManager) {
 	
+	$loggedIn = false;
+	$username = $request->get('_username');
+	$password = $request->get('_password');
+	
+	//var_dump($username);
+	//var_dump($password);
+	
+	
+	if (! empty($username) && ! empty($password)) {
+		$repository = $entityManager->getRepository('Model\Entity\User');
+		try {
+		$user = $repository->findOneBy(array('login' => $username));
+		} catch (Exception $e) {
+			var_dump($e->getMessage());exit();
+		}
+		//var_dump($user);exit();
+		if ($user instanceof Model\Entity\User) {
+			$password = $password;
+			if (strcmp($password, $user->getPassword()) == 0) {
+				$loggedIn = true;
+			} else {
+				var_dump('Password wrong');
+			}
+		} else {
+			var_dump('Username wrong');
+		}
+	}
+	
+	//$user = new Model\Entity\User();
+	//$user->setUsername($login);
+	//$user->setPassword($password);
+	
+	if ($loggedIn) {
+		//exit('logged in');
+		// https://gist.github.com/simonjodet/3927516
+		try {
+		$token = new UsernamePasswordToken($user, 'user_firewall', $user->getPassword(), $user->getRoles());
+		var_dump($token);
+		
+		} catch (Exception $e) {
+			var_dump($e->getMessage());exit();
+		}
+		$app['security']->setToken($token);
+		//exit('logged in');
+		return $app->redirect('/cricket/web/');
+	}
+	exit('not logged in');
+	return $app->redirect('/cricket/web/login');
 	/*$sql = "SELECT * FROM users WHERE login = ? AND password = ?";
 	$user = $app['db']->fetchAssoc($sql, array((string) $login));
 	$userId = $user['id'];
@@ -116,10 +181,10 @@ $app->post('login', function(Request $request) use ($app) {
 		$loggedIn = true;
 	}
 	$app['session']->set('loggedIn', $loggedIn);*/
-	return $app->redirect('/cricket/web/');
+	
 });
 
-$app->get('login', function() use ($app, $twig, $twigParameters, $entityManager) {
+$app->get('login', function(Request $request) use ($app, $twig, $twigParameters, $entityManager) {
 	
 	$user = new Model\Entity\User();
 	$user->setName('Test User');
@@ -136,6 +201,10 @@ $app->get('login', function() use ($app, $twig, $twigParameters, $entityManager)
 	} catch (Exception $e) {
 		var_dump($e);
 	}
+	
+	$twigParameters['error'] = $app['security.last_error']($request);
+	$twigParameters['last_username'] = $app['session']->get('_security.last_username');
+	
 	$template = $twig->loadTemplate('login.html');
 	return $template->render($twigParameters);
 });
@@ -149,6 +218,7 @@ $app->error(function (\Exception $exception, $code) {
 		
 		
 		default:
+			var_dump($exception);
 			return print_r($exception, true);
 			break;
 	}

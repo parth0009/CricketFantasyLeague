@@ -2,6 +2,9 @@
 
 namespace Model\Entity;
 
+//use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * User
  * 
@@ -11,7 +14,7 @@ namespace Model\Entity;
  * @DiscriminatorColumn(name="type", type="string")
  * @DiscriminatorMap({"user" = "User", "player" = "Player", "admin" = "Admin" })
  */
-class User extends Entity
+class User extends Entity implements UserInterface
 {	
 	/**
 	 * Name of User
@@ -36,6 +39,30 @@ class User extends Entity
 	 * @Column(type="string")
 	 */
 	protected $password;
+	
+	/*
+	 * Putting these properties in the parent class so that 
+	 * can use single table inheritance (for simplicity)
+	 */
+	
+	/**
+	 * Team selection (1st team, 2nd team, 3rd team, etc.)
+	 * @Column(type="integer")
+	 * @var integer
+	 */
+	private $selection;
+	
+	/**
+	 * Skill of Player (bowler, batter or allstar)
+	 * @Column(type="string")
+	 */
+	private $skill;
+	
+	/**
+	 * ACL role
+	 * @var string
+	 */
+	protected $role = 'user';
 	
 	public function __toString()
 	{
@@ -63,9 +90,9 @@ class User extends Entity
 	/**
 	 * @return the $name
 	 */
-	public function getPassword() {
+	/*public function getPassword() {
 		return null;
-	}
+	}*/
 	
 	/**
 	 * @param string $name
@@ -101,7 +128,73 @@ class User extends Entity
 	public function setLogin($login) {
 		$this->login = $login;
 	}
+	
+	/**
+	 * Returns the roles granted to the user.
+	 *
+	 * <code>
+	 * public function getRoles()
+	 * {
+	 *     return array('ROLE_USER');
+	 * }
+	 * </code>
+	 *
+	 * Alternatively, the roles might be stored on a ``roles`` property,
+	 * and populated in any number of different ways when the user object
+	 * is created.
+	 *
+	 * @return Role[] The user roles
+	 */
+	public function getRoles()
+	{
+		return array((string) $this->role);
+	}
+	
+	/**
+	 * Returns the password used to authenticate the user.
+	 *
+	 * This should be the encoded password. On authentication, a plain-text
+	 * password will be salted, encoded, and then compared to this value.
+	 *
+	 * @return string The password
+	*/
+	public function getPassword()
+	{
+		return $this->password;
+	}
+	
+	/**
+	 * Returns the salt that was originally used to encode the password.
+	 *
+	 * This can return null if the password was not encoded using a salt.
+	 *
+	 * @return string The salt
+	*/
+	public function getSalt()
+	{
+		return null;
+	}
+	
+	/**
+	 * Returns the username used to authenticate the user.
+	 *
+	 * @return string The username
+	*/
+	public function getUsername()
+	{
+		return $this->getLogin();
+	}
+	
+	/**
+	 * Removes sensitive data from the user.
+	 *
+	 * This is important if, at any given point, sensitive information like
+	 * the plain-text password is stored on this object.
+	 *
+	 * @return void
+	*/
+	public function eraseCredentials() {}
 
 	
-	
+
 }

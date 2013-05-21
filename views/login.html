@@ -63,10 +63,11 @@
 
     <div class="container">
 
-      <form class="form-signin" method="post">
+      <form action="" class="form-signin" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input name="login" type="text" class="input-block-level" placeholder="Email address">
-        <input name="password" type="password" class="input-block-level" placeholder="Password">
+        	{{ error }}
+		    <input type="text" name="_username" value="{{ last_username }}" placeholder="Email address" class="input-block-level" />
+		    <input type="password" name="_password" value="" placeholder="Password" class="input-block-level" />
         <label class="checkbox">
           <input type="checkbox" value="remember-me"> Remember me
         </label>

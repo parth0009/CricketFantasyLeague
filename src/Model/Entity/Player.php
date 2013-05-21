@@ -49,6 +49,12 @@ class Player extends User
 	 * @Column(type="string")
 	 */
 	private $skill;
+	
+	/**
+	 * ACL role
+	 * @var string
+	 */
+	protected $role = 'player';
 
 	/**
 	 * @return the $name
