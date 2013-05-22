@@ -114,7 +114,7 @@ $app->get('', function() use ($app, $twig, $entityManager) {
     }
 
     $teams = $entityManager->getRepository('Model\Entity\Team')->findAll();
-	
+    
 	$token = $app['security']->getToken();
 	//var_dump($token);
 	//exit();

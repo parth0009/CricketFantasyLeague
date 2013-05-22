@@ -118,6 +118,20 @@ class Team extends Entity
 	public function setLogin($login) {
 		$this->login = $login;
 	}
+	
+	/**
+	 * @return the $login
+	 */
+	public function getUser() {
+		return $this->user;
+	}
+	
+	/**
+	 * @param field_type $login
+	 */
+	public function setUser(Model\Entity\User $user) {
+		$this->user = $user;
+	}
 
 	
 	
