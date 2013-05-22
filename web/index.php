@@ -228,6 +228,25 @@ $app->get('/summary', function(Request $request) {
 	return 'Summary';
 });
 
+$app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entityManager) {
+	$team = $entityManager->find('Model\Entity\Team', (integer) $id);
+	if (! $team instanceof Model\Entity\Team) {
+		return 'No';
+	}
+	$name = $team->name;
+	$name = (string) $team;
+	var_dump($name);
+	
+	//return $team->name;
+	
+	
+	
+	$twigParameters['team'] = $team;
+	
+	$template = $twig->loadTemplate('team.html');
+	return $template->render($twigParameters);
+});
+
 $app->error(function (\Exception $exception, $code) {
 	switch ((integer) $code) {
 		
