@@ -9,8 +9,8 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="components/bootstrap.css/css/bootstrap.css" rel="stylesheet">
-    <link href="components/bootstrap.css/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{ baseUrl }}/components/bootstrap.css/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ baseUrl }}/components/bootstrap.css/css/bootstrap-responsive.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -29,7 +29,7 @@
         }
       }
     </style>
-	 <link href="themes/readable/bootstrap.css" rel="stylesheet">
+	 <link href="{{ baseUrl }}/themes/readable/bootstrap.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -97,40 +97,36 @@
           <div class="hero-unit">
             <h1>Fantasy Cricket League</h1>
             <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-            <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
           </div>
           <div class="row-fluid">
           
           <!-- Tables
 ================================================== -->
-<section id="tables">
-  <div class="page-header">
-    <h1>League table</h1>
-  </div>
+    <h2>League table</h2>
+    <p>Standings for week x</p>
   
   <table class="table table-bordered table-striped table-hover">
     <thead>
       <tr>
-        <th>#</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
+        <th>Team</th>
+        <th>User</th>
+        <th>Week x points</th>
+        <th>Total points</th>
       </tr>
     </thead>
     <tbody>
     {% for team in teams %}
     <tr>
-        <td>{{ team.id }}</td>
-        <td>{{ team.name }}</td>
-        <td><a class="btn" href="/cricket/web/team/{{ team.id }}">View roster</a></td>
-        <td>@mdo</td>
-      </tr>
-              {% else %}
-              <tr>
-		       <td colspan="4">No teams</td>
-		     </tr>
-              {% endfor %}
-
+      <td><a href="/cricket/web/team/{{ team.id }}">{{ team.name }}</a></td>
+      <td>{{ team.user.name }}</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+    {% else %}
+    <tr>
+	  <td colspan="4">No teams</td>
+	</tr>
+     {% endfor %}
     </tbody>
   </table>
 </section>

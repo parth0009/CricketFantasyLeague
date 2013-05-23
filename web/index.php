@@ -14,7 +14,7 @@ use \Doctrine\Common\Cache\ApcCache;
 use \Doctrine\Common\Cache\ArrayCache;
 use \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-$baseUrl = '/localhost/cricket/web/';
+$baseUrl = '//localhost/cricket/web'; // Without trailing slash
 $debug = true;
 
 // Start Silex
@@ -98,7 +98,7 @@ $app['security.firewalls'] = array(
  */
 
 // Homepage
-$app->get('', function() use ($app, $twig, $entityManager) {
+$app->get('', function() use ($app, $twig, $entityManager, $twigParameters) {
 
 	try {
         $user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
@@ -132,8 +132,10 @@ $app->get('', function() use ($app, $twig, $entityManager) {
 	if (! $loggedIn) {
 		return $app->redirect('login');
 	}*/
+	$twigParameters['teams'] = $teams;
+	//var_dump($twigParameters);
 	$template = $twig->loadTemplate('league.html');
-	return $template->render(array('teams' => $teams));
+	return $template->render($twigParameters);
 });
 
 $app->post('login', function(Request $request) use ($app, $entityManager) {
@@ -228,14 +230,14 @@ $app->get('/summary', function(Request $request) {
 	return 'Summary';
 });
 
-$app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entityManager) {
+$app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
 	$team = $entityManager->find('Model\Entity\Team', (integer) $id);
 	if (! $team instanceof Model\Entity\Team) {
 		return 'No';
 	}
-	$name = $team->name;
-	$name = (string) $team;
-	var_dump($name);
+	//$name = $team->name;
+	//$name = (string) $team;
+	//var_dump($name);
 	
 	//return $team->name;
 	
