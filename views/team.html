@@ -102,25 +102,34 @@
     <p>Owned by <a href="mailto:{{ team.user.email }}">{{ team.user.name }}</a></p>
     <p>Roster for week x</p>
   
-  <ul>
-  <li>Bowlers
-  <ul>
-  <li>?</li>
-  <li>?</li>
-  </ul>
-  </li>
-  <li>Batsmen
-  <ul>
-  <li>?</li>
-  <li>?</li>
-  </ul>
-  </li>
-  <li>All-rounder
-  <ul>
-  <li>?</li>
-  </ul>
-  </li>
-  </ul>
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+      	<th>Week</th>
+        <th>Bowler 1</th>
+        <th>Bowler 2</th>
+        <th>Batsman 1</th>
+        <th>Batsman 2</th>
+        <th>All-rounder</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>{{ entry.week }}</td>
+      <td><a href="/cricket/web/player/{{ entry.bowler1.id }}">{{ entry.bowler1.name }}</a></td>
+      <td><a href="/cricket/web/player/{{ entry.bowler2.id }}">{{ entry.bowler2.name }}</a></td>
+      <td><a href="/cricket/web/player/{{ entry.batter1.id }}">{{ entry.batter1.name }}</a></td>
+      <td><a href="/cricket/web/player/{{ entry.batter2.id }}">{{ entry.batter2.name }}</a></td>
+      <td><a href="/cricket/web/player/{{ entry.batsman1.id }}">{{ entry.allstar.name }}</a></td>
+    </tr>
+    {% else %}
+    <tr>
+	  <td colspan="6">No entries</td>
+	</tr>
+     {% endfor %}
+    </tbody>
+  </table>
           </div><!--/row-->
         </div><!--/span-->
       </div><!--/row-->

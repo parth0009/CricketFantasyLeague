@@ -241,7 +241,7 @@ $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entit
 	
 	//return $team->name;
 	
-	
+	$entries = $team->getEntries();
 	
 	$twigParameters['team'] = $team;
 	

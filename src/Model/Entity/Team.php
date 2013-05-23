@@ -25,48 +25,15 @@ class Team extends Entity
 	protected $user;
 	
 	/**
-	 * First batsman
-	 * @ManyToOne(targetEntity="Player")
-	 * @var Model\Entity\Player
-	 */
-	//protected $batter1;
-	
-	/**
-	 * Second batsman
-	 * @ManyToOne(targetEntity="Player")
-	 * @var Model\Entity\Player
-	 */
-	//protected $batter2;
-	
-	/**
-	 * First bowler
-	 * @ManyToOne(targetEntity="Player")
-	 * @var Model\Entity\Player
-	 */
-	//protected $bowler1;
-	
-	/**
-	 * Second bowler
-	 * @ManyToOne(targetEntity="Player")
-	 * @var Model\Entity\Player
-	 */
-	//protected $bowler2;
-	
-	/**
-	 * All-rounder
-	 * @ManyToOne(targetEntity="Player")
-	 * @var Model\Entity\Player
-	 */
-	//protected $allround;
-	
-	/**
 	 * @ManyToMany(targetEntity="Entry")
 	 * @JoinTable(name="user_groups",
 	 *      joinColumns={@JoinColumn(name="team_id", referencedColumnName="id")},
 	 *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="id")} 
  	 * )
 	 */
-	//protected $entries;
+	
+	
+	protected $entries;
 	
 	public function __toString()
 	{
@@ -131,6 +98,26 @@ class Team extends Entity
 	 */
 	public function setUser(Model\Entity\User $user) {
 		$this->user = $user;
+	}
+	
+	/**
+	 * @return the $login
+	 */
+	public function getEntries() {
+		return $this->entries;
+	}
+	
+	/**
+	 * @param field_type $login
+	 */
+	public function setEntries(array $entries) {
+		$this->entries = $entries;
+	}
+	
+	public function addEntry(Model\Entity\Entry $entry)
+	{
+		$entryId = $entry->id;
+		$this->entries[(integer) $entryId] = $entry;
 	}
 
 	

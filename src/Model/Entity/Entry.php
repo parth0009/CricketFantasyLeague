@@ -8,41 +8,85 @@ namespace Model\Entity;
  * Represents the Players a Team had for a given period of time (a week for example)
  * 
  * @Entity
- * @Table(name="teams")
+ * @Table(name="entries")
  */
-class Entry extends Team
+class Entry extends Entity
 {	
+	
 	/**
-	 * Team entry phase
+	 * Team that the Entry belongs to
+	 * @OneToOne(targetEntity="Model\Entity\Team")
+	 * @JoinColumn(name="team_id", referencedColumnName="id")
+	 * @var Model\Entity\Team
+	 */
+	protected $team;
+	
+	/**
+	 * First batsman
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
+	 */
+	//protected $batter1;
+	
+	/**
+	 * Second batsman
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
+	 */
+	//protected $batter2;
+	
+	/**
+	 * First bowler
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
+	 */
+	//protected $bowler1;
+	
+	/**
+	 * Second bowler
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
+	 */
+	//protected $bowler2;
+	
+	/**
+	 * All-rounder
+	 * @ManyToOne(targetEntity="Player")
+	 * @var Model\Entity\Player
+	 */
+	//protected $allround;
+	
+	/**
+	 * Team entry week
 	 * 
-	 * i.e. Phase 1, phase 2, etc. (week 1, week 2, etc.)
+	 * i.e. week 1, week 2, etc.
 	 * @ORM\Column(type="integer")
 	 */
-	protected $phase;
+	protected $week;
 	
 	public function __toString()
 	{
 		try {
-			return $this->getPhase();
+			return $this->getWeek();
 		} catch (Exception $exception) {
 			return '-';
 		}
 	}
 
 	/**
-	 * @return the $name
+	 * @return the $week
 	 */
-	public function getPhase() {
-		return $this->phase;
+	public function getWeek() {
+		return $this->week;
 	}
 
 	/**
-	 * @param integer $phase
+	 * @param integer $week
 	 */
-	public function setPhase($phase) {
-		$phase = (integer) $phase;
-		if ($phase) {
-			$this->phase = $phase;
+	public function setWeek($week) {
+		$week = (integer) $week;
+		if ($week) {
+			$this->week = $week;
 		}
 	}
 }
