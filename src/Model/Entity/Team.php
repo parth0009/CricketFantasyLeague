@@ -25,15 +25,9 @@ class Team extends Entity
 	protected $user;
 	
 	/**
-	 * @ManyToMany(targetEntity="Entry")
-	 * @JoinTable(name="user_groups",
-	 *      joinColumns={@JoinColumn(name="team_id", referencedColumnName="id")},
-	 *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="id")} 
- 	 * )
+     * @OneToMany(targetEntity="Model\Entity\Entry", mappedBy="team")
 	 */
-	
-	
-	protected $entries;
+    protected $entries;
 	
 	public function __toString()
 	{
@@ -101,7 +95,7 @@ class Team extends Entity
 	}
 	
 	/**
-	 * @return the $login
+	 * @return Model\Entity\Entry[] Entries for the Team
 	 */
 	public function getEntries() {
 		return $this->entries;

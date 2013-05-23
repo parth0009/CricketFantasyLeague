@@ -238,15 +238,36 @@ $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entit
 	//$name = $team->name;
 	//$name = (string) $team;
 	//var_dump($name);
-	
+
 	//return $team->name;
-	
-	$entries = $team->getEntries();
+
+    $team = $entityManager->find('Model\Entity\Team', (integer) $id);
+    $entries = $entityManager->getRepository('Model\Entity\Entry')->findAll();
+
+    //exit();
 	
 	$twigParameters['team'] = $team;
+    $twigParameters['entries'] = $entries;
 	
 	$template = $twig->loadTemplate('team.html');
 	return $template->render($twigParameters);
+});
+
+$app->get('/player/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
+    $player = $entityManager->find('Model\Entity\User', (integer) $id);
+    if (! $player instanceof Model\Entity\User) {
+        return 'No';
+    }
+
+    $statistics = Model\Statistic::getStatisticsWithPlayer($player, $entityManager);
+
+    //exit();
+
+    $twigParameters['player'] = $player;
+    $twigParameters['statistics'] = $statistics;
+
+    $template = $twig->loadTemplate('player.html');
+    return $template->render($twigParameters);
 });
 
 $app->error(function (\Exception $exception, $code) {
