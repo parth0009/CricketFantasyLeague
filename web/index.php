@@ -94,27 +94,41 @@ $app['security.firewalls'] = array(
 );
 
 /*
+ * Temporary user instantiation until Doctrine user provider is setup with security provider
+ */
+try {
+	$user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
+} catch (Exception $e) {
+	var_dump($e->getTraceAsString());
+	var_dump($e->getMessage());exit();
+}
+$twigParameters['user'] = $user;
+
+/*
  * Define routes
  */
 
 // Homepage
 $app->get('', function() use ($app, $twig, $entityManager, $twigParameters) {
+	
+	$template = $twig->loadTemplate('home.html');
+	return $template->render($twigParameters);
+	
+});
 
-	try {
-        $user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
-    } catch (Exception $e) {
-        var_dump($e->getTraceAsString());
-        var_dump($e->getMessage());exit();
-    }
-        //var_dump($team);exit();
+// Homepage
+$app->get('league', function() use ($app, $user, $twig, $entityManager, $twigParameters) {
+	
+	
+	//var_dump($team);exit();
+	
+	
+	if ($user instanceof Model\Entity\User) {
+		$team = $user->getTeam();
+	}
 
-
-    if ($user instanceof Model\Entity\User) {
-        $team = $user->getTeam();
-    }
-
-    $teams = $entityManager->getRepository('Model\Entity\Team')->findAll();
-    
+	$teams = $entityManager->getRepository('Model\Entity\Team')->findAll();
+	
 	$token = $app['security']->getToken();
 	//var_dump($token);
 	//exit();
@@ -128,10 +142,11 @@ $app->get('', function() use ($app, $twig, $entityManager, $twigParameters) {
 	}*/
 	
 	/*$loggedIn = $app['session']->get('loggedIn');
-	//var_dump($loggedIn);exit();
+	 //var_dump($loggedIn);exit();
 	if (! $loggedIn) {
-		return $app->redirect('login');
+	return $app->redirect('login');
 	}*/
+	$twigParameters['team'] = $team;
 	$twigParameters['teams'] = $teams;
 	//var_dump($twigParameters);
 	$template = $twig->loadTemplate('league.html');
