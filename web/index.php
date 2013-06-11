@@ -99,7 +99,6 @@ $app['security.firewalls'] = array(
 try {
 	$user = $entityManager->getRepository('Model\Entity\User')->findOneBy(array('login' => 'magickatt'));
 } catch (Exception $e) {
-	var_dump($e->getTraceAsString());
 	var_dump($e->getMessage());exit();
 }
 $twigParameters['user'] = $user;
@@ -119,10 +118,6 @@ $app->get('', function() use ($app, $twig, $entityManager, $twigParameters) {
 // Homepage
 $app->get('league', function() use ($app, $user, $twig, $entityManager, $twigParameters) {
 	
-	
-	//var_dump($team);exit();
-	
-	
 	if ($user instanceof Model\Entity\User) {
 		$team = $user->getTeam();
 	}
@@ -130,27 +125,13 @@ $app->get('league', function() use ($app, $user, $twig, $entityManager, $twigPar
 	$teams = $entityManager->getRepository('Model\Entity\Team')->findAll();
 	
 	$token = $app['security']->getToken();
-	//var_dump($token);
-	//exit();
-	//exit('hat');
-	//$userProvider = $app['security.user_provider.default'];
-	//var_dump($userProvider);
-	//var_dump($token);exit();
-	
-	/*if (! $app['security']->isGranted(ROLE_MEMBER) || ! $app['security']->isGranted(ROLE_ADMIN)) {
-		return $app->redirect('login');
-	}*/
-	
-	/*$loggedIn = $app['session']->get('loggedIn');
-	 //var_dump($loggedIn);exit();
-	if (! $loggedIn) {
-	return $app->redirect('login');
-	}*/
+
 	$twigParameters['team'] = $team;
 	$twigParameters['teams'] = $teams;
-	//var_dump($twigParameters);
+	
 	$template = $twig->loadTemplate('league.html');
 	return $template->render($twigParameters);
+	
 });
 
 $app->post('login', function(Request $request) use ($app, $entityManager) {
@@ -158,19 +139,15 @@ $app->post('login', function(Request $request) use ($app, $entityManager) {
 	$loggedIn = false;
 	$username = $request->get('_username');
 	$password = $request->get('_password');
-	
-	//var_dump($username);
-	//var_dump($password);
-	
-	
+		
 	if (! empty($username) && ! empty($password)) {
 		$repository = $entityManager->getRepository('Model\Entity\User');
 		try {
-		$user = $repository->findOneBy(array('login' => $username));
+			$user = $repository->findOneBy(array('login' => $username));
 		} catch (Exception $e) {
 			var_dump($e->getMessage());exit();
 		}
-		//var_dump($user);exit();
+
 		if ($user instanceof Model\Entity\User) {
 			$password = $password;
 			if (strcmp($password, $user->getPassword()) == 0) {
@@ -183,36 +160,21 @@ $app->post('login', function(Request $request) use ($app, $entityManager) {
 		}
 	}
 	
-	//$user = new Model\Entity\User();
-	//$user->setUsername($login);
-	//$user->setPassword($password);
-	
 	if ($loggedIn) {
-		//exit('logged in');
+		
 		// https://gist.github.com/simonjodet/3927516
 		try {
-		$token = new UsernamePasswordToken($user, 'user_firewall', $user->getPassword(), $user->getRoles());
-		var_dump($token);
-		
+			$token = new UsernamePasswordToken($user, 'user_firewall', $user->getPassword(), $user->getRoles());
 		} catch (Exception $e) {
 			var_dump($e->getMessage());exit();
 		}
+		
 		$app['security']->setToken($token);
-		//exit('logged in');
 		return $app->redirect('/cricket/web/');
+		
 	}
-	exit('not logged in');
+	
 	return $app->redirect('/cricket/web/login');
-	/*$sql = "SELECT * FROM users WHERE login = ? AND password = ?";
-	$user = $app['db']->fetchAssoc($sql, array((string) $login));
-	$userId = $user['id'];
-	
-	$loggedIn = $app['session']->set('userId', $userId);
-	
-	if ($user) {
-		$loggedIn = true;
-	}
-	$app['session']->set('loggedIn', $loggedIn);*/
 	
 });
 
@@ -239,6 +201,7 @@ $app->get('login', function(Request $request) use ($app, $twig, $twigParameters,
 	
 	$template = $twig->loadTemplate('login.html');
 	return $template->render($twigParameters);
+	
 });
 
 $app->get('/summary', function(Request $request) {
@@ -246,29 +209,25 @@ $app->get('/summary', function(Request $request) {
 });
 
 $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
+	
 	$team = $entityManager->find('Model\Entity\Team', (integer) $id);
 	if (! $team instanceof Model\Entity\Team) {
 		return 'No';
 	}
-	//$name = $team->name;
-	//$name = (string) $team;
-	//var_dump($name);
-
-	//return $team->name;
 
     $team = $entityManager->find('Model\Entity\Team', (integer) $id);
     $entries = $entityManager->getRepository('Model\Entity\Entry')->findAll();
-
-    //exit();
 	
 	$twigParameters['team'] = $team;
     $twigParameters['entries'] = $entries;
 	
 	$template = $twig->loadTemplate('team.html');
 	return $template->render($twigParameters);
+	
 });
 
 $app->get('/player/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
+	
     $player = $entityManager->find('Model\Entity\User', (integer) $id);
     if (! $player instanceof Model\Entity\User) {
         return 'No';
@@ -283,20 +242,20 @@ $app->get('/player/{id}', function(Request $request, $id) use ($app, $twig, $ent
 
     $template = $twig->loadTemplate('player.html');
     return $template->render($twigParameters);
+    
 });
 
 $app->error(function (\Exception $exception, $code) {
+	
 	switch ((integer) $code) {
-		
-		
 		default:
 			var_dump($exception->getMessage());
 			exit();
 			return print_r($exception, true);
 			break;
 	}
+	
 });
 
 // Run Silex
 $app->run();
-

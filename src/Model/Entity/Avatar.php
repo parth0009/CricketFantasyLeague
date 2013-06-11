@@ -48,7 +48,7 @@ class Avatar extends Entity
 	 * @return the $name
 	 */
 	public function getPath() {
-		return $this->name;
+		return $this->path;
 	}
 
 	/**

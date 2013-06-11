@@ -60,8 +60,8 @@
               Logged in as {{ user.username }} | <a href="{{baseUrl}}logout" class="navbar-link">Logout</a>
             </p>
             <ul class="nav">
-              <li><a href="{{ baseUrl}}/">Home</a></li>
-              <li class="active"><a href="{{ baseUrl}}/team/{{ user.team.id}} ">My Team</a></li>
+              <li class="active"><a href="{{ baseUrl}}/">Home</a></li>
+              <li><a href="{{ baseUrl}}/team/{{ user.team.id}} ">My Team</a></li>
               <li><a href="{{ baseUrl}}/league">League</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -94,42 +94,14 @@
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
+          <div class="hero-unit">
+            <h1>Fantasy Cricket League</h1>
+            <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+          </div>
           <div class="row-fluid">
           
-          <!-- Tables
-================================================== -->
-    <h2>{{ team.name }}</h2>
-    <p>Owned by <a href="mailto:{{ team.user.email }}">{{ team.user.name }}</a></p>
-    <p>Roster for week x</p>
-  
-  <table class="table table-bordered table-striped table-hover">
-    <thead>
-      <tr>
-      	<th>Week</th>
-        <th>Bowler 1</th>
-        <th>Bowler 2</th>
-        <th>Batsman 1</th>
-        <th>Batsman 2</th>
-        <th>All-rounder</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for entry in entries %}
-    <tr>
-      <td>{{ entry.week }}</td>
-      <td><a href="/cricket/web/player/{{ entry.bowler1.id }}">{{ entry.bowler1.name }}</a></td>
-      <td><a href="/cricket/web/player/{{ entry.bowler2.id }}">{{ entry.bowler2.name }}</a></td>
-      <td><a href="/cricket/web/player/{{ entry.batter1.id }}">{{ entry.batter1.name }}</a></td>
-      <td><a href="/cricket/web/player/{{ entry.batter2.id }}">{{ entry.batter2.name }}</a></td>
-      <td><a href="/cricket/web/player/{{ entry.batsman1.id }}">{{ entry.allstar.name }}</a></td>
-    </tr>
-    {% else %}
-    <tr>
-	  <td colspan="6">No entries</td>
-	</tr>
-     {% endfor %}
-    </tbody>
-  </table>
+          <p>Lorum ipsum (insert lorem ipsum here...)</p>
+    
           </div><!--/row-->
         </div><!--/span-->
       </div><!--/row-->

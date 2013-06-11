@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="{{ baseUrl }}/components/bootstrap.css/css/bootstrap.css" rel="stylesheet">
+    <!-- <link href="{{ baseUrl }}/components/bootstrap.css/css/bootstrap.css" rel="stylesheet"> -->
     <link href="{{ baseUrl }}/components/bootstrap.css/css/bootstrap-responsive.css" rel="stylesheet">
     <style type="text/css">
         body {
@@ -57,7 +57,7 @@
             <a class="brand" href="#">Fantasy Cricket League</a>
             <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
-                    Logged in as {{ login }} | <a href="{{baseUrl}}logout" class="navbar-link">Logout</a>
+                    Logged in as {{ user.username }} | <a href="{{baseUrl}}logout" class="navbar-link">Logout</a>
                 </p>
                 <ul class="nav">
                     <li class="active"><a href="{{ baseUrl}}/">Home</a></li>
@@ -102,7 +102,7 @@
                 <ul>
                     <li>Skill: {{ player.skill }}</li>
                 </ul>
-
+				<div id="player-avatar"><img src="{{ baseUrl }}/uploads/avatars/{{ player.avatar.path }}" height="100" width="75" alt="{{ player.name }}"/></div>
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                     <tr>
