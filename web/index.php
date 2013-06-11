@@ -219,7 +219,7 @@ $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entit
     $entries = $entityManager->getRepository('Model\Entity\Entry')->findAll();
 	
 	$twigParameters['team'] = $team;
-    $twigParameters['entries'] = $entries;
+    //$twigParameters['entries'] = $entries;
 	
 	$template = $twig->loadTemplate('team.html');
 	return $template->render($twigParameters);
