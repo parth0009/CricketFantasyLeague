@@ -99,8 +99,18 @@
           <!-- Tables
 ================================================== -->
     <h2>{{ team.name }}</h2>
+    
     <p>Owned by <a href="mailto:{{ team.user.email }}">{{ team.user.name }}</a></p>
-    <p>Roster for week x</p>
+    <p>Total points: ?</p>
+    
+<ul class="nav nav-tabs">
+  <li class="active">
+    <a href="{{ baseUrl}}/team/{{ team.id}} ">View</a>
+  </li>
+  <li>
+  <a href="{{ baseUrl}}/team/edit/{{ team.id}}">Edit</a>
+  </li>
+</ul>
   
   <table class="table table-bordered table-striped table-hover">
     <thead>
@@ -111,6 +121,7 @@
         <th>Batsman 1</th>
         <th>Batsman 2</th>
         <th>All-rounder</th>
+        <th>Points</th>
       </tr>
     </thead>
     <tbody>

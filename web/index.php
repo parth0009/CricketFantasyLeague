@@ -226,6 +226,24 @@ $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entit
 	
 });
 
+	$app->get('/team/edit/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
+	
+		$team = $entityManager->find('Model\Entity\Team', (integer) $id);
+		if (! $team instanceof Model\Entity\Team) {
+			return 'No';
+		}
+	
+		$team = $entityManager->find('Model\Entity\Team', (integer) $id);
+		$entries = $entityManager->getRepository('Model\Entity\Entry')->findAll();
+	
+		$twigParameters['team'] = $team;
+		//$twigParameters['entries'] = $entries;
+	
+		$template = $twig->loadTemplate('edit-team.html');
+		return $template->render($twigParameters);
+	
+	});
+
 $app->get('/player/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
 	
     $player = $entityManager->find('Model\Entity\User', (integer) $id);
