@@ -238,6 +238,8 @@ $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entit
 	
 		$twigParameters['team'] = $team;
 		//$twigParameters['entries'] = $entries;
+		
+		$twigParameters['game'] = 1;
 	
 		$template = $twig->loadTemplate('edit-team.html');
 		return $template->render($twigParameters);

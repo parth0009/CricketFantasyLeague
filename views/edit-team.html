@@ -121,18 +121,26 @@
         <th>Batsman 1</th>
         <th>Batsman 2</th>
         <th>All-rounder</th>
-        <th>Points</th>
       </tr>
     </thead>
     <tbody>
     {% for entry in team.entries %}
     <tr>
+    {% if entry.week == game %}
+    <td>{{ entry.week }}</td>
+      <td><select style="width:7.5em;"><option>1</option><option>2</option><option>3</option></select></td>
+      <td><select style="width:7.5em;"><option>1</option><option>2</option><option>3</option></select></td>
+      <td><select style="width:7.5em;"><option>1</option><option>2</option><option>3</option></select></td>
+      <td><select style="width:7.5em;"><option>1</option><option>2</option><option>3</option></select></td>
+      <td><select style="width:7.5em;"><option>1</option><option>2</option><option>3</option></select></td>
+    {% else %}
       <td>{{ entry.week }}</td>
       <td><a href="/cricket/web/player/{{ entry.bowler1.id }}">{{ entry.bowler1.name }}</a></td>
       <td><a href="/cricket/web/player/{{ entry.bowler2.id }}">{{ entry.bowler2.name }}</a></td>
       <td><a href="/cricket/web/player/{{ entry.batter1.id }}">{{ entry.batter1.name }}</a></td>
       <td><a href="/cricket/web/player/{{ entry.batter2.id }}">{{ entry.batter2.name }}</a></td>
       <td><a href="/cricket/web/player/{{ entry.batsman1.id }}">{{ entry.allstar.name }}</a></td>
+    {% endif %}
     </tr>
     {% else %}
     <tr>
