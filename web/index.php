@@ -211,9 +211,9 @@ $app->get('/summary', function(Request $request) {
 $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entityManager, $twigParameters) {
 	
 	$team = $entityManager->find('Model\Entity\Team', (integer) $id);
-	if (! $team instanceof Model\Entity\Team) {
-		return 'No';
-	}
+	//if (! $team instanceof Model\Entity\Team) {
+	//	return 'No';
+	//}
 
     $team = $entityManager->find('Model\Entity\Team', (integer) $id);
     $entries = $entityManager->getRepository('Model\Entity\Entry')->findAll();
@@ -240,6 +240,13 @@ $app->get('/team/{id}', function(Request $request, $id) use ($app, $twig, $entit
 		//$twigParameters['entries'] = $entries;
 		
 		$twigParameters['game'] = 1;
+		
+		//$bowlers = $entityManager->findAllBy();
+		//$batters = $entityManager->findAll
+		//$allstars
+		$twigParameters['bowlers'] = $bowlers;
+		$twigParameters['batters'] = $batters;
+		$twigParameters['allstars'] = $allstars;
 	
 		$template = $twig->loadTemplate('edit-team.html');
 		return $template->render($twigParameters);
@@ -253,12 +260,46 @@ $app->get('/player/{id}', function(Request $request, $id) use ($app, $twig, $ent
         return 'No';
     }
 
-    $statistics = Model\Statistic::getStatisticsWithPlayer($player, $entityManager);
-
+    //$statistics = Model\Statistic::getStatisticsWithPlayer($player, $entityManager);
+    
+    /*$q = $entityManager->createQuery("SELECT * FROM Model\Entity\Entry WHERE batter1_id = 4
+    UNION
+    SELECT * FROM Model\Entity\Entry WHERE batter2_id = 4");
+    $entries = $q->getResult();*/
+    
+    /*$q = $entityManager->createQuery("SELECT * FROM Model\Entity\Entry WHERE batter1_id = 4");
+    $entries = $q->getResult();*/
+    
+    $qb = $entityManager->createQueryBuilder();
+    $qb->add('select', 'COUNT(e)')
+    	->add('from', 'Model\Entity\Entry e')
+    	->add('where', 'e.batter1 = ' . $id . ' OR e.batter2 = ' . $id)
+    	->add('orderBy', 'e.id ASC');
+    
+    $q = $qb->getQuery();
+    $result = $q->getResult();
+    $countEntries = (integer) array_pop($result[0]);
+    //var_dump($countEntries);
+    
+    
+    
+    
+    $qb = $entityManager->createQueryBuilder();
+    $qb->add('select', 'e')
+    ->add('from', 'Model\Entity\Entry e')
+    ->add('where', 'e.batter1 = ' . $id . ' OR e.batter2 = ' . $id)
+    ->add('orderBy', 'e.id ASC');
+    
+    $q = $qb->getQuery();
+    $entries = $q->getResult();
+    //var_dump($result);
+    
     //exit();
 
     $twigParameters['player'] = $player;
-    $twigParameters['statistics'] = $statistics;
+    $twigParameters['entries'] = $entries;
+    $twigParameters['countEntries'] = $countEntries;
+    //$twigParameters['statistics'] = $statistics;
 
     $template = $twig->loadTemplate('player.html');
     return $template->render($twigParameters);
