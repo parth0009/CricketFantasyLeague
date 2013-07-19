@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * 
  * @Entity
  * @Table(name="users")
- * @InheritanceType("SINGLE_TABLE")
+ * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="type", type="string")
  * @DiscriminatorMap({"user" = "Model\Entity\User", "player" = "Model\Entity\Player", "admin" = "Model\Entity\Admin" })
  */
@@ -44,19 +44,6 @@ class User extends Entity implements UserInterface
 	 * Putting these properties in the parent class so that 
 	 * can use single table inheritance (for simplicity)
 	 */
-	
-	/**
-	 * Team selection (1st team, 2nd team, 3rd team, etc.)
-	 * @Column(type="integer")
-	 * @var integer
-	 */
-	private $selection;
-	
-	/**
-	 * Skill of Player (bowler, batter or allstar)
-	 * @Column(type="string")
-	 */
-	private $skill;
 	
 	/**
 	 * ACL role

@@ -6,6 +6,7 @@ namespace Model\Entity;
  * Player
  *
  * @Entity
+ * @Table(name="players")
  */
 class Player extends User
 {	
@@ -31,7 +32,7 @@ class Player extends User
 	 * Types that the Player could be
 	 * @var string[]
 	 */
-	private static $skills = array(
+	protected static $skills = array(
 		self::TYPE_BOWLER,
 		self::TYPE_BATTER,
 		self::TYPE_ALLSTAR,
@@ -42,13 +43,13 @@ class Player extends User
 	 * @Column(type="integer")
 	 * @var integer
 	 */
-	private $selection;
+	protected $selection;
 	
 	/**
 	 * Skill of Player (bowler, batter or allstar)
 	 * @Column(type="string")
 	 */
-	private $skill;
+	protected $skill;
 	
 	/**
 	 * ACL role
